@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+easyocr
+pillow
+azure-ai-ml
+python-multipart
+
+[dev]
+pytest
+black
+ruff

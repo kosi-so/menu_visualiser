@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+src/app/image_gen.py
+src/app/main.py
+src/app/nlp.py
+src/app/ocr.py
+src/menu_visualiser.egg-info/PKG-INFO
+src/menu_visualiser.egg-info/SOURCES.txt
+src/menu_visualiser.egg-info/dependency_links.txt
+src/menu_visualiser.egg-info/requires.txt
+src/menu_visualiser.egg-info/top_level.txt
