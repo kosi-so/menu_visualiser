@@ -1,5 +1,6 @@
 README.md
 pyproject.toml
+src/app/group_with_gpt.py
 src/app/image_gen.py
 src/app/main.py
 src/app/nlp.py

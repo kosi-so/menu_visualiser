@@ -4,6 +4,9 @@ easyocr
 pillow
 azure-ai-ml
 python-multipart
+python-dotenv
+azure-ai-documentintelligence
+openai
 
 [dev]
 pytest

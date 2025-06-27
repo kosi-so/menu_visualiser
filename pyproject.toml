@@ -13,7 +13,10 @@ dependencies = [
     "easyocr",
     "pillow",
     "azure-ai-ml",
-    "python-multipart"
+    "python-multipart",
+    "python-dotenv",
+    "azure-ai-documentintelligence",
+    "openai"
 ]
 
 [project.optional-dependencies]

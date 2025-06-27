@@ -12,6 +12,9 @@ Requires-Dist: easyocr
 Requires-Dist: pillow
 Requires-Dist: azure-ai-ml
 Requires-Dist: python-multipart
+Requires-Dist: python-dotenv
+Requires-Dist: azure-ai-documentintelligence
+Requires-Dist: openai
 Provides-Extra: dev
 Requires-Dist: pytest; extra == "dev"
 Requires-Dist: black; extra == "dev"
