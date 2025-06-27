@@ -56,4 +56,4 @@ jobs:
         echo "AZURE_OPENAI_DEPLOYMENT_NAME=$AZURE_OPENAI_DEPLOYMENT_NAME" >> .env
 
     - name: Run test suite
-      run: uv run python scripts/run_tests.py
+      run: uv run pytest tests/ -v
