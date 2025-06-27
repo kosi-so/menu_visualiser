@@ -1,6 +1,6 @@
 # src/app/pipeline.py
-from ocr import extract_menu_items
-from group_with_gpt import group_lines_with_gpt
+from src.app.ocr.ocr import extract_menu_items
+from src.app.ocr.group_with_gpt import group_lines_with_gpt
 
 def run_pipeline(image_path):
     print("Running OCR...")
