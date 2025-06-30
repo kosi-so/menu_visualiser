@@ -10,11 +10,12 @@ from src.app.ocr.ocr_pipeline import run_pipeline
 class TestExtractMenuItems:
     """Test cases for the extract_menu_items function."""
 
-    @patch('src.app.ocr.ocr.client')
+    @patch('src.app.ocr.ocr.get_azure_client')
     @patch('builtins.open', new_callable=mock_open, read_data=b'fake_image_data')
-    def test_extract_menu_items_success(self, mock_file, mock_client):
+    def test_extract_menu_items_success(self, mock_file, mock_get_client):
         """Test successful extraction of menu items from image."""
         # Mock the Azure Document Intelligence response
+        mock_client = Mock()
         mock_result = Mock()
         mock_page = Mock()
         mock_line1 = Mock()
@@ -30,6 +31,7 @@ class TestExtractMenuItems:
         mock_poller = Mock()
         mock_poller.result.return_value = mock_result
         mock_client.begin_analyze_document.return_value = mock_poller
+        mock_get_client.return_value = mock_client
 
         # Test the function
         result = extract_menu_items("fake_image_path.jpg")
@@ -39,11 +41,12 @@ class TestExtractMenuItems:
         mock_client.begin_analyze_document.assert_called_once()
         mock_file.assert_called_once_with("fake_image_path.jpg", "rb")
 
-    @patch('src.app.ocr.ocr.client')
+    @patch('src.app.ocr.ocr.get_azure_client')
     @patch('builtins.open', new_callable=mock_open, read_data=b'fake_image_data')
-    def test_extract_menu_items_with_bullets_and_numbers(self, mock_file, mock_client):
+    def test_extract_menu_items_with_bullets_and_numbers(self, mock_file, mock_get_client):
         """Test extraction with various bullet points and numbers."""
         # Mock response with different bullet formats
+        mock_client = Mock()
         mock_result = Mock()
         mock_page = Mock()
         mock_lines = [
@@ -59,6 +62,7 @@ class TestExtractMenuItems:
         mock_poller = Mock()
         mock_poller.result.return_value = mock_result
         mock_client.begin_analyze_document.return_value = mock_poller
+        mock_get_client.return_value = mock_client
 
         result = extract_menu_items("fake_image_path.jpg")
 
@@ -66,34 +70,39 @@ class TestExtractMenuItems:
         expected = ["Chicken Salad", "Caesar Dressing", "Garden Fresh", "Steak House", "$15.99"]
         assert result == expected
 
-    @patch('src.app.ocr.ocr.client')
+    @patch('src.app.ocr.ocr.get_azure_client')
     @patch('builtins.open', new_callable=mock_open, read_data=b'fake_image_data')
-    def test_extract_menu_items_empty_result(self, mock_file, mock_client):
+    def test_extract_menu_items_empty_result(self, mock_file, mock_get_client):
         """Test handling of empty OCR result."""
         # Mock empty response
+        mock_client = Mock()
         mock_result = Mock()
         mock_result.pages = []
         
         mock_poller = Mock()
         mock_poller.result.return_value = mock_result
         mock_client.begin_analyze_document.return_value = mock_poller
+        mock_get_client.return_value = mock_client
 
         result = extract_menu_items("fake_image_path.jpg")
 
         assert result == []
 
-    @patch('src.app.ocr.ocr.client')
-    def test_extract_menu_items_file_not_found(self, mock_client):
+    @patch('src.app.ocr.ocr.get_azure_client')
+    def test_extract_menu_items_file_not_found(self, mock_get_client):
         """Test handling of file not found error."""
+        mock_get_client.return_value = Mock()
         with pytest.raises(FileNotFoundError):
             extract_menu_items("nonexistent_file.jpg")
 
-    @patch('src.app.ocr.ocr.client')
+    @patch('src.app.ocr.ocr.get_azure_client')
     @patch('builtins.open', new_callable=mock_open, read_data=b'fake_image_data')
-    def test_extract_menu_items_azure_error(self, mock_file, mock_client):
+    def test_extract_menu_items_azure_error(self, mock_file, mock_get_client):
         """Test handling of Azure API errors."""
         # Mock Azure API error
+        mock_client = Mock()
         mock_client.begin_analyze_document.side_effect = Exception("Azure API Error")
+        mock_get_client.return_value = mock_client
 
         with pytest.raises(Exception, match="Azure API Error"):
             extract_menu_items("fake_image_path.jpg")
@@ -112,15 +121,17 @@ class TestExtractMenuItems:
 class TestGroupLinesWithGPT:
     """Test cases for the group_lines_with_gpt function."""
 
-    @patch('src.app.ocr.group_with_gpt.client')
-    def test_group_lines_with_gpt_success(self, mock_client):
+    @patch('src.app.ocr.group_with_gpt.get_openai_client')
+    def test_group_lines_with_gpt_success(self, mock_get_openai_client):
         """Test successful grouping of OCR lines with GPT."""
         # Mock GPT response
+        mock_client = Mock()
         mock_response = Mock()
         mock_choice = Mock()
         mock_choice.message.content = '[{"name": "Burger", "price": "$12.99", "description": "Delicious burger"}]'
         mock_response.choices = [mock_choice]
         mock_client.chat.completions.create.return_value = mock_response
+        mock_get_openai_client.return_value = (mock_client, "deployment_name")
 
         # Test input
         ocr_lines = ["Burger", "$12.99", "Delicious burger"]
@@ -131,35 +142,41 @@ class TestGroupLinesWithGPT:
         assert result == '[{"name": "Burger", "price": "$12.99", "description": "Delicious burger"}]'
         mock_client.chat.completions.create.assert_called_once()
 
-    @patch('src.app.ocr.group_with_gpt.client')
-    def test_group_lines_with_gpt_empty_input(self, mock_client):
+    @patch('src.app.ocr.group_with_gpt.get_openai_client')
+    def test_group_lines_with_gpt_empty_input(self, mock_get_openai_client):
         """Test grouping with empty OCR lines."""
+        mock_client = Mock()
         mock_response = Mock()
         mock_choice = Mock()
         mock_choice.message.content = '[]'
         mock_response.choices = [mock_choice]
         mock_client.chat.completions.create.return_value = mock_response
+        mock_get_openai_client.return_value = (mock_client, "deployment_name")
 
         result = group_lines_with_gpt([])
 
         assert result == '[]'
 
-    @patch('src.app.ocr.group_with_gpt.client')
-    def test_group_lines_with_gpt_api_error(self, mock_client):
+    @patch('src.app.ocr.group_with_gpt.get_openai_client')
+    def test_group_lines_with_gpt_api_error(self, mock_get_openai_client):
         """Test handling of GPT API errors."""
+        mock_client = Mock()
         mock_client.chat.completions.create.side_effect = Exception("GPT API Error")
+        mock_get_openai_client.return_value = (mock_client, "deployment_name")
 
         with pytest.raises(Exception, match="GPT API Error"):
             group_lines_with_gpt(["test line"])
 
-    @patch('src.app.ocr.group_with_gpt.client')
-    def test_group_lines_with_gpt_prompt_format(self, mock_client):
+    @patch('src.app.ocr.group_with_gpt.get_openai_client')
+    def test_group_lines_with_gpt_prompt_format(self, mock_get_openai_client):
         """Test that the prompt is formatted correctly."""
+        mock_client = Mock()
         mock_response = Mock()
         mock_choice = Mock()
         mock_choice.message.content = '[]'
         mock_response.choices = [mock_choice]
         mock_client.chat.completions.create.return_value = mock_response
+        mock_get_openai_client.return_value = (mock_client, "deployment_name")
 
         ocr_lines = ["Line 1", "Line 2"]
         group_lines_with_gpt(ocr_lines)
