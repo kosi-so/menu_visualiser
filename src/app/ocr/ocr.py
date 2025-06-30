@@ -6,17 +6,25 @@ import re
 
 # Load Azure credentials from .env
 load_dotenv()
-endpoint = os.getenv("AZURE_ENDPOINT")
-key = os.getenv("AZURE_KEY")
 
-# Initialize Azure Document Intelligence client
-client = DocumentIntelligenceClient(endpoint=endpoint, credential=AzureKeyCredential(key))
+def get_azure_client():
+    """Get Azure Document Intelligence client."""
+    endpoint = os.getenv("AZURE_ENDPOINT")
+    key = os.getenv("AZURE_KEY")
+    
+    if not endpoint or not key:
+        raise ValueError("AZURE_ENDPOINT and AZURE_KEY environment variables must be set")
+    
+    return DocumentIntelligenceClient(endpoint=endpoint, credential=AzureKeyCredential(key))
 
 def extract_menu_items(image_path: str) -> list[str]:
     """
     Extracts food items (line-by-line) from a menu image using Azure Document Intelligence Read model.
     Returns a list of cleaned food item lines.
     """
+    # Initialize client inside function to avoid import-time errors
+    client = get_azure_client()
+    
     with open(image_path, "rb") as f:
         poller = client.begin_analyze_document(
             model_id="prebuilt-read",
