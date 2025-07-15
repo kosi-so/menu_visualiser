@@ -23,7 +23,8 @@ dependencies = [
 dev = [
     "pytest",
     "black",
-    "ruff"
+    "ruff",
+    "pre-commit"
 ]
 
 
@@ -32,7 +33,7 @@ line-length = 88
 
 [tool.ruff]
 line-length = 88
-target-version = "py313"
+target-version = "py312"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -3,6 +3,7 @@ from src.app.ocr.ocr_pipeline import run_pipeline as run_ocr_pipeline
 from src.app.image_gen import generate_images  # You may need to implement this
 # from src.app.nlp import ... (if needed)
 
+
 def full_menu_pipeline(image_path):
     """
     1. Run OCR pipeline to extract and structure menu items.
@@ -10,7 +11,7 @@ def full_menu_pipeline(image_path):
     3. Return structured menu and generated images.
     """
     structured_menu_json = run_ocr_pipeline(image_path)
-    
+
     # Parse the JSON string into a list of dictionaries
     try:
         if isinstance(structured_menu_json, str):
@@ -22,14 +23,12 @@ def full_menu_pipeline(image_path):
         print(f"Error parsing JSON: {e}")
         print(f"Raw response: {structured_menu_json}")
         structured_menu = []
-    
+
     # Generate images for each menu item
     images = generate_images(structured_menu)
-    
-    return {
-        "menu": structured_menu,
-        "images": images
-    }
+
+    return {"menu": structured_menu, "images": images}
+
 
 if __name__ == "__main__":
     result = full_menu_pipeline("src/assets/sample3.jpg")
@@ -37,5 +36,5 @@ if __name__ == "__main__":
     print(f"Menu items: {len(result['menu'])}")
     print(f"Generated images: {len(result['images'])}")
     print("\nMenu items:")
-    for item in result['menu']:
+    for item in result["menu"]:
         print(f"- {item.get('name', 'Unknown')}: {item.get('price', 'N/A')}")

@@ -1,20 +1,14 @@
-import os
 from pathlib import Path
 
 # Define subdirectories to create
-subdirs = [
-    "app",
-    "frontend",
-    "azure",
-    ".github/workflows"
-]
+subdirs = ["app", "frontend", "azure", ".github/workflows"]
 
 # Define files to create
 files = {
     "app": ["ocr.py", "nlp.py", "image_gen.py", "main.py"],
     "azure": ["model_deployment.yml"],
     ".github/workflows": ["ci-cd.yml"],
-    ".": [".gitignore", "requirements.txt", "pyproject.toml", "README.md"]
+    ".": [".gitignore", "requirements.txt", "pyproject.toml", "README.md"],
 }
 
 # Create subdirectories

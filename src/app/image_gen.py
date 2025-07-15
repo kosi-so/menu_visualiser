@@ -1,5 +1,4 @@
 from openai import AzureOpenAI
-import argparse
 import os
 import requests
 from pathlib import Path
@@ -9,19 +8,21 @@ import re
 
 load_dotenv()
 
+
 def sanitize_filename(name):
     """Convert menu item name to a valid filename."""
     # Replace forward slashes and other invalid characters
-    sanitized = re.sub(r'[<>:"/\\|?*]', '_', name)
+    sanitized = re.sub(r'[<>:"/\\|?*]', "_", name)
     # Replace spaces with underscores
-    sanitized = sanitized.replace(' ', '_')
+    sanitized = sanitized.replace(" ", "_")
     # Convert to lowercase
     sanitized = sanitized.lower()
     # Remove multiple underscores
-    sanitized = re.sub(r'_+', '_', sanitized)
+    sanitized = re.sub(r"_+", "_", sanitized)
     # Remove leading/trailing underscores
-    sanitized = sanitized.strip('_')
+    sanitized = sanitized.strip("_")
     return sanitized
+
 
 # ---- Configuration ----
 def get_openai_client():
@@ -29,16 +30,14 @@ def get_openai_client():
     api_key = os.getenv("DALLE_3_KEY")
     azure_endpoint = os.getenv("DALLE_3_ENDPOINT")
     deployment_name = os.getenv("DALLE_3_DEPLOYMENT_NAME")
-    
+
     if not api_key or not azure_endpoint or not deployment_name:
         raise ValueError(
             "DALLE_3_KEY, DALLE_3_ENDPOINT, and DALLE_3_DEPLOYMENT_NAME environment variables must be set"
         )
 
     client = AzureOpenAI(
-        api_key=api_key,
-        azure_endpoint=azure_endpoint,
-        api_version="2024-03-01-preview"
+        api_key=api_key, azure_endpoint=azure_endpoint, api_version="2024-03-01-preview"
     )
     return client, deployment_name
 
@@ -52,16 +51,19 @@ def build_prompt(name: str, description: str = None) -> str:
     base += " The photo should be in a restaurant menu style."
     return base
 
+
 # ---- Image Generation ----
-def generate_image(client, deployment_name: str, prompt: str, name: str, save_path: Path) -> None:
+def generate_image(
+    client, deployment_name: str, prompt: str, name: str, save_path: Path
+) -> None:
     print(f"[INFO] Generating image for: {name}")
     response = client.images.generate(
         prompt=prompt,
-        model=deployment_name,   # now using the correct deployment name!
+        model=deployment_name,  # now using the correct deployment name!
         n=1,
         size="1024x1024",
         quality="standard",
-        response_format="url"
+        response_format="url",
     )
     image_url = response.data[0].url
     # print(f"[INFO] Image URL: {image_url}")
@@ -71,6 +73,7 @@ def generate_image(client, deployment_name: str, prompt: str, name: str, save_pa
     with open(save_path, "wb") as f:
         f.write(img_data)
     print(f"[SUCCESS] Image saved to {save_path}")
+
 
 def generate_images(menu_items: list[dict]):
     """
@@ -95,7 +98,3 @@ def generate_images(menu_items: list[dict]):
                 raise
 
     return list_of_images
-
-
-
-

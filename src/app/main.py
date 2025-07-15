@@ -4,13 +4,18 @@ from pathlib import Path
 from src.app.image_gen import build_prompt, generate_image, get_openai_client
 
 
-
 # ---- Main CLI ----
 def main():
-    parser = argparse.ArgumentParser(description="Generate a realistic food image using Azure DALL·E 3.")
-    parser.add_argument("--name", required=True, help="Name of the meal (e.g., Beef Rendang)")
+    parser = argparse.ArgumentParser(
+        description="Generate a realistic food image using Azure DALL·E 3."
+    )
+    parser.add_argument(
+        "--name", required=True, help="Name of the meal (e.g., Beef Rendang)"
+    )
     parser.add_argument("--description", help="Optional description of the meal")
-    parser.add_argument("--output_dir", default="src/assets", help="Directory to save generated images")
+    parser.add_argument(
+        "--output_dir", default="src/assets", help="Directory to save generated images"
+    )
 
     args = parser.parse_args()
     prompt = build_prompt(args.name, args.description)
@@ -22,6 +27,7 @@ def main():
 
     client, deployment_name = get_openai_client()
     generate_image(client, deployment_name, prompt, args.name, save_path)
+
 
 if __name__ == "__main__":
     main()

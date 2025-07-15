@@ -24,6 +24,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+build/
 
 # PyInstaller
 *.manifest
@@ -148,11 +149,12 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-Project specific
-Uncomment if you don't want to track sample images
+# Project specific
 src/assets/*.jpg
 src/assets/*.jpeg
 src/assets/*.png
+src/assets/menu/
+src/assets/menu2/
 
 # Azure
 *.pem

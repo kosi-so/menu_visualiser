@@ -1,6 +1,7 @@
 """
 Pytest configuration and shared fixtures for menu_visualiser tests.
 """
+
 import pytest
 import tempfile
 import os
@@ -19,7 +20,7 @@ def sample_ocr_lines():
         "Mixed greens with vinaigrette",
         "Steak House",
         "$18.99",
-        "Premium cut with mashed potatoes"
+        "Premium cut with mashed potatoes",
     ]
 
 
@@ -30,18 +31,18 @@ def sample_structured_menu():
         {
             "name": "Burger Deluxe",
             "price": "$12.99",
-            "description": "Fresh beef with fries"
+            "description": "Fresh beef with fries",
         },
         {
             "name": "Chicken Salad",
             "price": "$10.99",
-            "description": "Mixed greens with vinaigrette"
+            "description": "Mixed greens with vinaigrette",
         },
         {
             "name": "Steak House",
             "price": "$18.99",
-            "description": "Premium cut with mashed potatoes"
-        }
+            "description": "Premium cut with mashed potatoes",
+        },
     ]
 
 
@@ -68,10 +69,10 @@ def mock_gpt_response():
     """Mock GPT API response."""
     mock_response = Mock()
     mock_choice = Mock()
-    mock_choice.message.content = '''[
+    mock_choice.message.content = """[
         {"name": "Burger Deluxe", "price": "$12.99", "description": "Fresh beef with fries"},
         {"name": "Chicken Salad", "price": "$10.99", "description": "Mixed greens with vinaigrette"}
-    ]'''
+    ]"""
     mock_response.choices = [mock_choice]
     return mock_response
 
@@ -79,13 +80,13 @@ def mock_gpt_response():
 @pytest.fixture
 def temp_image_file():
     """Create a temporary image file for testing."""
-    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as f:
+    with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as f:
         # Write some fake image data
-        f.write(b'fake_image_data')
+        f.write(b"fake_image_data")
         temp_path = f.name
-    
+
     yield temp_path
-    
+
     # Cleanup
     if os.path.exists(temp_path):
         os.unlink(temp_path)
@@ -94,8 +95,12 @@ def temp_image_file():
 @pytest.fixture(autouse=True)
 def mock_env_vars(monkeypatch):
     """Mock environment variables for testing."""
-    monkeypatch.setenv("AZURE_ENDPOINT", "https://fake-endpoint.cognitiveservices.azure.com/")
+    monkeypatch.setenv(
+        "AZURE_ENDPOINT", "https://fake-endpoint.cognitiveservices.azure.com/"
+    )
     monkeypatch.setenv("AZURE_KEY", "fake-key")
     monkeypatch.setenv("AZURE_OPENAI_KEY", "fake-openai-key")
-    monkeypatch.setenv("AZURE_OPENAI_ENDPOINT", "https://fake-openai-endpoint.openai.azure.com/")
-    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT_NAME", "fake-deployment") 
+    monkeypatch.setenv(
+        "AZURE_OPENAI_ENDPOINT", "https://fake-openai-endpoint.openai.azure.com/"
+    )
+    monkeypatch.setenv("AZURE_OPENAI_DEPLOYMENT_NAME", "fake-deployment")
