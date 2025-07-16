@@ -30,11 +30,11 @@ def full_menu_pipeline(image_path):
     return {"menu": structured_menu, "images": images}
 
 
-if __name__ == "__main__":
-    result = full_menu_pipeline("src/assets/sample3.jpg")
-    print("Pipeline Result:")
-    print(f"Menu items: {len(result['menu'])}")
-    print(f"Generated images: {len(result['images'])}")
-    print("\nMenu items:")
-    for item in result["menu"]:
-        print(f"- {item.get('name', 'Unknown')}: {item.get('price', 'N/A')}")
+# if __name__ == "__main__":
+#     result = full_menu_pipeline("src/assets/sample3.jpg")
+#     print("Pipeline Result:")
+#     print(f"Menu items: {len(result['menu'])}")
+#     print(f"Generated images: {len(result['images'])}")
+#     print("\nMenu items:")
+#     for item in result["menu"]:
+#         print(f"- {item.get('name', 'Unknown')}: {item.get('price', 'N/A')}")

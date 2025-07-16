@@ -7,8 +7,10 @@ python-multipart
 python-dotenv
 azure-ai-documentintelligence
 openai
+streamlit
 
 [dev]
 pytest
 black
 ruff
+pre-commit

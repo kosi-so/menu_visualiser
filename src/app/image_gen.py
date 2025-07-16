@@ -5,6 +5,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import openai
 import re
+import tempfile
 
 load_dotenv()
 
@@ -78,23 +79,32 @@ def generate_image(
 def generate_images(menu_items: list[dict]):
     """
     Accepts a list of menu item dicts and returns a list of image paths or image data.
+    Images are stored in a temporary directory that is deleted after the session.
+    Returns a list of image data.
     """
     client, deployment_name = get_openai_client()
-    output_dir = Path("src/assets/menu2")
-    output_dir.mkdir(parents=True, exist_ok=True)
     list_of_images = []
-    for item in menu_items:
-        prompt = build_prompt(item["name"], item["description"])
-        clean_name = sanitize_filename(item["name"])
-        image_path = output_dir / f"{clean_name}.jpg"
-        try:
-            generate_image(client, deployment_name, prompt, item["name"], image_path)
-            list_of_images.append(image_path)
-        except openai.BadRequestError as e:
-            if "content_policy_violation" in str(e):
-                print(f"[WARNING] Skipping {item['name']} due to content policy")
-                continue
-            else:
-                raise
-
-    return list_of_images
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        output_dir = Path(tmpdirname)
+        for item in menu_items:
+            prompt = build_prompt(item["name"], item["description"])
+            clean_name = sanitize_filename(item["name"])
+            image_path = output_dir / f"{clean_name}.jpg"
+            try:
+                generate_image(client, deployment_name, prompt, item["name"], image_path)
+                list_of_images.append(image_path)
+            except openai.BadRequestError as e:
+                if "content_policy_violation" in str(e):
+                    print(f"[WARNING] Skipping {item['name']} due to content policy")
+                    continue
+                else:
+                    raise
+        # At this point, list_of_images contains Path objects to the temp files
+        # The files will be deleted when the with-block exits
+        # If you need to return the image data, read them here before the block ends
+        images_data = []
+        for image_path in list_of_images:
+            with open(image_path, "rb") as f:
+                images_data.append(f.read())
+        return images_data
+        

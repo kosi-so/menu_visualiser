@@ -16,7 +16,8 @@ dependencies = [
     "python-multipart",
     "python-dotenv",
     "azure-ai-documentintelligence",
-    "openai"
+    "openai",
+    "streamlit",
 ]
 
 [project.optional-dependencies]

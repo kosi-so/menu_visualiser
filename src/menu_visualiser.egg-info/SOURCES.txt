@@ -3,7 +3,7 @@ pyproject.toml
 src/app/__init__.py
 src/app/image_gen.py
 src/app/main.py
-src/app/nlp.py
+src/app/pipeline.py
 src/app/ocr/__init__.py
 src/app/ocr/group_with_gpt.py
 src/app/ocr/ocr.py

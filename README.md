@@ -18,9 +18,9 @@ A computer vision app that reads a menu and generates images of meals using Azur
 
 ```
 menu_visualiser/
+├── main.py                   # Streamlit app entry point
 ├── src/
 │   └── app/
-│       ├── main.py           # FastAPI app
 │       ├── pipeline.py       # End-to-end pipeline: OCR → GPT → image_gen
 │       ├── image_gen.py      # Image generation logic
 │       └── ocr/
@@ -88,49 +88,23 @@ This will:
 - Structure them with GPT
 - Generate images for each menu item
 
+## 🌐 Streamlit App
+
+You can interactively use the Menu Visualiser via a Streamlit web app. This provides a user-friendly interface for uploading menu images and visualising the generated results.
+
+### Run the Streamlit App
+
+```bash
+streamlit run main.py
+```
+
+- This will launch the app in your browser at [http://localhost:8501](http://localhost:8501).
+- Make sure your environment variables are set (see Installation section).
+- The app will guide you through uploading a menu image, extracting items, and viewing generated images.
+- **Note:** Images are stored temporarily for the session and are not persisted after the app stops.
+- *(Optional)* Add a screenshot or GIF of the Streamlit app here to showcase its functionality.
 
 ## 🧪 Testing
 
 Run all tests:
-```bash
-pytest
 ```
-
-Run pre-commit hooks on all files:
-```bash
-pre-commit run --all-files
-```
-
----
-
-## 📝 Development
-
-- Code is formatted and linted with [Ruff](https://docs.astral.sh/ruff/)
-- Pre-commit hooks ensure code quality before every commit.
-- Tests use mocks for Azure and OpenAI clients for fast, offline testing.
-
----
-
-## 📄 License
-
-MIT License
-
----
-
-## ✨ Contributing
-
-1. Fork the repo and create your branch.
-2. Make your changes and add tests.
-3. Run `pre-commit run --all-files` and `pytest`.
-4. Submit a pull request!
-
----
-
-## 📬 Contact
-
-Author: Kosi  
-Email: kossyfab@gmail.com
-
----
-
-Let me know if you want to add usage examples, API endpoint details, or deployment instructions!
